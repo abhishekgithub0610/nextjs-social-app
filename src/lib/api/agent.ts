@@ -10,6 +10,12 @@ import { toast } from "react-toastify";
 const sleep = (delay: number) =>
   new Promise((resolve) => setTimeout(resolve, delay));
 
+interface ApiError {
+  title?: string;
+  detail?: string;
+  errors?: Record<string, string[]>;
+}
+
 const agent = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
@@ -48,29 +54,30 @@ agent.interceptors.response.use(
       toast.error("Network error");
       return Promise.reject(error);
     }
-
-    const { status, data }: any = error.response;
+    const { status, data } = error.response;
+    const apiError = data as ApiError;
+    //const { status, data }: any = error.response;
 
     switch (status) {
       case 400:
-        if (data?.errors) {
+        if (apiError?.errors) {
           const modelStateErrors: string[] = [];
 
-          for (const key in data.errors) {
-            if (data.errors[key]) {
-              modelStateErrors.push(...data.errors[key]);
+          for (const key in apiError.errors) {
+            if (apiError.errors[key]) {
+              modelStateErrors.push(...apiError.errors[key]);
             }
           }
 
           throw modelStateErrors;
         }
 
-        toast.error(data?.title || "Bad request");
+        toast.error(apiError?.title || "Bad request");
         break;
 
       case 401:
-        if (data?.detail === "NotAllowed") {
-          throw new Error(data.detail);
+        if (apiError?.detail === "NotAllowed") {
+          throw new Error(apiError.detail);
         }
 
         toast.error("Unauthorized");
@@ -92,6 +99,47 @@ agent.interceptors.response.use(
         toast.error("Something went wrong");
         break;
     }
+    // switch (status) {
+    //   case 400:
+    //     if (data?.errors) {
+    //       const modelStateErrors: string[] = [];
+
+    //       for (const key in data.errors) {
+    //         if (data.errors[key]) {
+    //           modelStateErrors.push(...data.errors[key]);
+    //         }
+    //       }
+
+    //       throw modelStateErrors;
+    //     }
+
+    //     toast.error(data?.title || "Bad request");
+    //     break;
+
+    //   case 401:
+    //     if (data?.detail === "NotAllowed") {
+    //       throw new Error(data.detail);
+    //     }
+
+    //     toast.error("Unauthorized");
+    //     break;
+
+    //   case 403:
+    //     toast.error("Forbidden");
+    //     break;
+
+    //   case 404:
+    //     toast.error("Not found");
+    //     break;
+
+    //   case 500:
+    //     toast.error("Server error");
+    //     break;
+
+    //   default:
+    //     toast.error("Something went wrong");
+    //     break;
+    // }
 
     return Promise.reject(error);
   },
@@ -101,17 +149,20 @@ agent.interceptors.response.use(
  * Generic request helpers
  */
 
+import { AxiosRequestConfig } from "axios";
+
 const requests = {
-  get: <T>(url: string, config?: any) =>
+  get: <T>(url: string, config?: AxiosRequestConfig) =>
     agent.get<T>(url, config).then((res) => res.data),
 
-  post: <T>(url: string, body?: any, config?: any) =>
+  post: <T>(url: string, body?: unknown, config?: AxiosRequestConfig) =>
     agent.post<T>(url, body, config).then((res) => res.data),
 
-  put: <T>(url: string, body?: any) =>
-    agent.put<T>(url, body).then((res) => res.data),
+  put: <T>(url: string, body?: unknown, config?: AxiosRequestConfig) =>
+    agent.put<T>(url, body, config).then((res) => res.data),
 
-  del: <T>(url: string) => agent.delete<T>(url).then((res) => res.data),
+  del: <T>(url: string, config?: AxiosRequestConfig) =>
+    agent.delete<T>(url, config).then((res) => res.data),
 };
 
 export default requests;

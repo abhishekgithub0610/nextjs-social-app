@@ -31,17 +31,15 @@ export const useActivities = (id?: string) => {
   } = useInfiniteQuery<PagedList<Activity, string>>({
     queryKey: ["activities", filter, startDate],
     queryFn: async ({ pageParam }) => {
-      const { data } = await agent.get<PagedList<Activity, string>>(
-        "/activities",
-        {
-          params: {
-            cursor: pageParam ?? null,
-            pageSize: 3,
-            filter,
-            startDate,
-          },
+      const data = await agent.get<PagedList<Activity, string>>("/activities", {
+        //const { data } = await agent.get<PagedList<Activity, string>>("/activities",{
+        params: {
+          cursor: pageParam ?? null,
+          pageSize: 3,
+          filter,
+          startDate,
         },
-      );
+      });
       return data;
     },
     initialPageParam: null,
@@ -76,7 +74,8 @@ export const useActivities = (id?: string) => {
   const { data: activity, isLoading: isLoadingActivity } = useQuery<Activity>({
     queryKey: ["activities", id],
     queryFn: async () => {
-      const { data } = await agent.get<Activity>(`/activities/${id}`);
+      const data = await agent.get<Activity>(`/activities/${id}`);
+      //const { data } = await agent.get<Activity>(`/activities/${id}`);
       return data;
     },
     enabled: !!id && !!currentUser,
@@ -98,11 +97,13 @@ export const useActivities = (id?: string) => {
    */
   const createActivity = useMutation({
     mutationFn: async (activity: Activity) => {
-      const { data } = await agent.post("/activities", activity);
+      const data = await agent.post("/activities", activity);
+      //const { data } = await agent.post("/activities", activity);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["activities"] });
+      queryClient.invalidateQueries({ queryKey: ["activities"], exact: false });
+      //queryClient.invalidateQueries({ queryKey: ["activities"] });
     },
   });
 
@@ -125,10 +126,13 @@ export const useActivities = (id?: string) => {
    */
   const deleteActivity = useMutation({
     mutationFn: async (id: string) => {
-      await agent.delete(`/activities/${id}`);
+      await agent.del(`/activities/${id}`);
+      //await agent.delete(`/activities/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["activities"] });
+      queryClient.invalidateQueries({ queryKey: ["activities"], exact: false });
+
+      //queryClient.invalidateQueries({ queryKey: ["activities"] });
     },
   });
 
