@@ -3,14 +3,18 @@ import { MenuItem } from "@mui/material";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-export default function MenuItemLink({
-  children,
-  href,
-}: {
+type Props = {
   children: ReactNode;
   href: string;
-}) {
+};
+export default function MenuItemLink({ children, href }: Props) {
+  // export default function MenuItemLink({
+  //   children,
+  //   href,
+  // }: {
+  //   children: ReactNode;
+  //   href: string;
+  // }) {
   // CHANGE: Get current path in Next.js
   const pathname = usePathname();
 

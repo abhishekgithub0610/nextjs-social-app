@@ -2,21 +2,103 @@ import "./globals.css";
 import NavBar from "@/components/layout/NavBar";
 import QueryProvider from "@/providers/QueryProvider";
 import StoreProvider from "@/providers/StoreProvider";
+import { ReactNode } from "react";
+import { Metadata } from "next";
 
-export default function RootLayout({ children }) {
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { Toolbar } from "@mui/material";
+
+export const metadata: Metadata = {
+  title: "Social App",
+  description: "Social media application",
+};
+
+type RootLayoutProps = {
+  children: ReactNode;
+};
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <StoreProvider>
-          <QueryProvider>
-            <NavBar />
-            {children}
-          </QueryProvider>
-        </StoreProvider>
+        <AppRouterCacheProvider>
+          <StoreProvider>
+            <QueryProvider>
+              <NavBar />
+              <Toolbar /> {/* spacer */}
+              {children}
+            </QueryProvider>
+          </StoreProvider>
+        </AppRouterCacheProvider>
       </body>
+      {/* <body>
+        <AppRouterCacheProvider>
+          <StoreProvider>
+            <QueryProvider>
+              <NavBar />
+              {children}
+            </QueryProvider>
+          </StoreProvider>
+        </AppRouterCacheProvider>
+      </body> */}
     </html>
   );
 }
+
+// import "./globals.css";
+// import NavBar from "@/components/layout/NavBar";
+// import QueryProvider from "@/providers/QueryProvider";
+// import StoreProvider from "@/providers/StoreProvider";
+// import { ReactNode } from "react";
+
+// // MUI SSR FIX
+// import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+
+// type RootLayoutProps = {
+//   children: ReactNode;
+// };
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//   return (
+//     <html lang="en">
+//       <body>
+//         <AppRouterCacheProvider>
+//           <StoreProvider>
+//             <QueryProvider>
+//               <NavBar />
+//               {children}
+//             </QueryProvider>
+//           </StoreProvider>
+//         </AppRouterCacheProvider>
+//       </body>
+//     </html>
+//   );
+// }
+// import "./globals.css";
+// import NavBar from "@/components/layout/NavBar";
+// import QueryProvider from "@/providers/QueryProvider";
+// import StoreProvider from "@/providers/StoreProvider";
+// import { ReactNode } from "react"; // <- import ReactNode
+
+// type RootLayoutProps = {
+//   children: ReactNode; // <- type children
+// };
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//   return (
+//     <html lang="en">
+//       <body suppressHydrationWarning>
+//         {" "}
+//         <StoreProvider>
+//           <QueryProvider>
+//             <NavBar />
+//             {children}
+//           </QueryProvider>
+//         </StoreProvider>
+//       </body>
+//     </html>
+//   );
+// }
 
 // import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";

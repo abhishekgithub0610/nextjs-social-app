@@ -1,3 +1,4 @@
+"use client";
 import {
   Box,
   Typography,
@@ -7,21 +8,29 @@ import {
   Avatar,
   CircularProgress,
 } from "@mui/material";
-import { Link, useParams } from "react-router";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useComments } from "../../../lib/hooks/useComments";
 import { timeAgo } from "../../../lib/util/util";
 import { useForm, type FieldValues } from "react-hook-form";
 import { observer } from "mobx-react-lite";
 
 const ActivityDetailsChat = observer(function ActivityDetailsChat() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string;
   const { commentStore } = useComments(id);
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   reset,
+  //   formState: { isSubmitting },
+  // } = useForm();
   const {
     register,
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm();
+  } = useForm<{ body: string }>();
 
   const addComment = async (data: FieldValues) => {
     try {
@@ -95,6 +104,14 @@ const ActivityDetailsChat = observer(function ActivityDetailsChat() {
                     >
                       {comment.displayName}
                     </Typography>
+                    {/* <Typography
+                      component={Link}
+                      href={`/profiles/${comment.userId}`}
+                      variant="subtitle1"
+                      sx={{ fontWeight: "bold", textDecoration: "none" }}
+                    >
+                      {comment.displayName}
+                    </Typography> */}
                     <Typography variant="body2" color="textSecondary">
                       {timeAgo(comment.createdAt)}
                     </Typography>

@@ -1,5 +1,6 @@
+"use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import agent from "../api/agent.ts";
+import agent from "../api/agent";
 import type { LoginSchema } from "../schemas/loginSchema.ts";
 import { useRouter } from "next/navigation";
 
@@ -9,7 +10,7 @@ import type { ChangePasswordSchema } from "../schemas/changePasswordSchema.ts";
 
 export const useAccount = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
     queryKey: ["user"],
@@ -28,7 +29,7 @@ export const useAccount = () => {
       await queryClient.invalidateQueries({
         queryKey: ["user"],
       });
-      await navigate("/activities");
+      router.push("/activities"); // FIXED
     },
   });
 
@@ -45,7 +46,7 @@ export const useAccount = () => {
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["user"] });
       queryClient.removeQueries({ queryKey: ["activities"] });
-      navigate("/");
+      router.push("/"); // FIXED
     },
   });
 

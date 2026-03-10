@@ -2,7 +2,7 @@
 import { Avatar, Popover } from "@mui/material";
 import { useState } from "react";
 import Link from "next/link";
-import ProfileCard from "../../../features/profiles/ProfileCard";
+import ProfileCard from "@/features/profiles/ProfileCard";
 
 type Props = {
   profile: Profile;

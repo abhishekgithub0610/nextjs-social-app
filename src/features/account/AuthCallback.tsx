@@ -1,14 +1,15 @@
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-
+"use client";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAccount } from "../../lib/hooks/useAccount";
 import { useEffect, useRef, useState } from "react";
 import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import { GitHub } from "@mui/icons-material";
 
 export default function AuthCallback() {
-  const [params] = useSearchParams();
-  const navigate = useNavigate();
+  const params = useSearchParams();
+
+  // CHANGE: useRouter replaces React Router's useNavigate
+  const router = useRouter();
   const { fetchGithubToken } = useAccount();
   const code = params.get("code");
   const [loading, setLoading] = useState(true);
@@ -20,12 +21,12 @@ export default function AuthCallback() {
 
     fetchGithubToken
       .mutateAsync(code)
-      .then(() => navigate("/activities"))
+      .then(() => router.push("/activities"))
       .catch((error) => {
         console.log(error);
         setLoading(false);
       });
-  }, [code, fetchGithubToken, navigate]);
+  }, [code, fetchGithubToken, router]); // CHANGE: dependency updated
 
   if (!code) return <Typography>Problem authenticating with GitHub</Typography>;
 

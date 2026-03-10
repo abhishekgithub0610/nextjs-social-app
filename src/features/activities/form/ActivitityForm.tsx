@@ -1,6 +1,7 @@
+"use client";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useActivities } from "../../../lib/hooks/useActivities";
-import { useParams } from "react-router";
+import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
@@ -21,8 +22,13 @@ export default function ActivityForm() {
     mode: "onTouched",
     resolver: zodResolver(activitySchema),
   });
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const params = useParams();
+  const id = params?.id as string;
+
+  // CHANGE: useRouter replaces useNavigate
+  const router = useRouter();
+
+  //const navigate = useNavigate();
   const { updateActivity, createActivity, activity, isLoadingActivity } =
     useActivities(id);
 
@@ -46,12 +52,12 @@ export default function ActivityForm() {
     try {
       if (activity) {
         updateActivity.mutate({ ...activity, ...flattenedData } as Activity, {
-          onSuccess: () => navigate(`/activities/${activity.id}`),
+          onSuccess: () => router.push(`/activities/${activity.id}`),
         });
       } else {
         createActivity.mutate(flattenedData as Activity, {
-          onSuccess: (id) => {
-            navigate(`/activities/${id}`);
+          onSuccess: (id: string) => {
+            router.push(`/activities/${id}`);
           },
         });
       }

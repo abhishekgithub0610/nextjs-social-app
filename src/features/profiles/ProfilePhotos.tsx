@@ -1,3 +1,4 @@
+"use client";
 import {
   Box,
   Button,
@@ -6,15 +7,15 @@ import {
   ImageListItem,
   Typography,
 } from "@mui/material";
-import { useProfile } from "../../lib/hooks/useProfile.ts";
-import { useParams } from "react-router";
+import { useProfile } from "../../lib/hooks/useProfile";
+import { useParams } from "next/navigation";
 import { useState } from "react";
-import PhotoUploadWidget from "../../app/shared/components/PhotoUploadWidget.tsx";
-import StarButton from "../../app/shared/components/StarButton.tsx";
-import DeleteButton from "../../app/shared/components/DeleteButton.tsx";
-
+import PhotoUploadWidget from "../../app/shared/components/PhotoUploadWidget";
+import StarButton from "../../app/shared/components/StarButton";
+import DeleteButton from "../../app/shared/components/DeleteButton";
+import Image from "next/image";
 export default function ProfilePhotos() {
-  const { id } = useParams();
+  const { id } = useParams() as { id: string };
   const {
     photos,
     loadingPhotos,
@@ -64,7 +65,7 @@ export default function ProfilePhotos() {
             <ImageList sx={{ height: 450 }} cols={6} rowHeight={164}>
               {photos.map((item) => (
                 <ImageListItem key={item.id}>
-                  <img
+                  {/* <img
                     srcSet={`${item.url.replace(
                       "/upload/",
                       "/upload/w_164,h_164,c_fill,f_auto,dpr_2,g_face/",
@@ -75,6 +76,12 @@ export default function ProfilePhotos() {
                     )}`}
                     alt={"user profile image"}
                     loading="lazy"
+                  /> */}
+                  <Image
+                    src={item.url}
+                    alt="user profile image"
+                    width={164}
+                    height={164}
                   />
                   {isCurrentUser && (
                     <div>

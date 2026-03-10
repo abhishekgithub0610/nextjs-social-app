@@ -1,3 +1,4 @@
+"use client";
 import { type SyntheticEvent, useEffect, useState } from "react";
 import {
   Box,
@@ -9,13 +10,14 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { Link, useParams } from "react-router";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { format } from "date-fns";
-import { useProfile } from "../../lib/hooks/useProfile.ts";
+import { useProfile } from "../../lib/hooks/useProfile";
 
 export default function ProfileActivities() {
   const [activeTab, setActiveTab] = useState(0);
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { userActivities, setFilter, loadingUserActivities } = useProfile(id);
 
   useEffect(() => {
@@ -56,7 +58,38 @@ export default function ProfileActivities() {
         {userActivities &&
           userActivities.map((activity: Activity) => (
             <Grid size={2} key={activity.id}>
+              {/* CHANGE: Next.js Link uses href but does NOT support style directly on children in older versions */}
               <Link
+                href={`/activities/${activity.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Card elevation={4}>
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    image={`/images/categoryImages/${activity.category}.jpg`}
+                    alt={activity.title}
+                    sx={{ objectFit: "cover" }}
+                  />
+
+                  <CardContent>
+                    <Typography variant="h6" textAlign="center" mb={1}>
+                      {activity.title}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      textAlign="center"
+                      display="flex"
+                      flexDirection="column"
+                    >
+                      <span>{format(activity.date, "do LLL yyyy")}</span>
+                      <span>{format(activity.date, "h:mm a")}</span>
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Link>
+              {/* <Link
                 href={`/activities/${activity.id}`}
                 style={{ textDecoration: "none" }}
               >
@@ -83,7 +116,7 @@ export default function ProfileActivities() {
                     </Typography>
                   </CardContent>
                 </Card>
-              </Link>
+              </Link> */}
             </Grid>
           ))}
       </Grid>

@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import Link from "next/link";
-import MenuItemLink from "../shared/components/MenuItemLink";
+import MenuItemLink from "../shared/MenuItemLink";
 import { Observer } from "mobx-react-lite";
 import { useStore } from "../../lib/hooks/useStore";
 import { useAccount } from "../../lib/hooks/useAccount";
@@ -19,16 +19,19 @@ import UserMenu from "./UserMenu";
 export default function NavBar() {
   const { uiStore } = useStore();
   const { currentUser } = useAccount();
+  const navGradient =
+    "linear-gradient(135deg, #182a73 0%, #218aae 69%, #20a7ac 89%)";
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar
+      <AppBar position="fixed" sx={{ backgroundImage: navGradient }}>
+        {/* <AppBar
         position="fixed"
         sx={{
           backgroundImage:
             "linear-gradient(135deg, #182a73 0%, #218aae 69%, #20a7ac 89%)",
         }}
-      >
+      > */}
         <Container maxWidth="xl">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
             <Box>
@@ -73,8 +76,8 @@ export default function NavBar() {
                 <UserMenu />
               ) : (
                 <>
-                  <MenuItemLink href="/login">Login</MenuItemLink>
-                  <MenuItemLink href="/register">Register</MenuItemLink>
+                  <MenuItemLink href="/account/login">Login</MenuItemLink>
+                  <MenuItemLink href="/account/register">Register</MenuItemLink>
                 </>
               )}
             </Box>
